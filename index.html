@@ -3,243 +3,498 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> صيانة السيارات - الفنين</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js">
-    </script>
+    <title>صيانة السيارات - الفنين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --gold: #f59e0b;
+            --gold-hover: #d97706;
+            --danger: #ef4444;
+            --bg-gradient-1: #0f172a;
+            --bg-gradient-2: #1e293b;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #f8fafc;
+            --primary-light: #e2e8f0;
+            --bg-gradient-1: #020617;
+            --bg-gradient-2: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
+
         body {
-            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, #000000 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* خلفية متحركة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .container {
             max-width: 1100px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
             padding: 40px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s ease-out;
         }
-        h2 {
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* رأس الصفحة */
+        .header {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 28px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        h2 {
+            color: var(--text-primary);
+            font-size: 32px;
+            font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        h2 i {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 36px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* زر الوضع الليلي */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-light);
+            border: 2px solid var(--glass-border);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        h3 {
+            margin: 30px 0 15px;
+            font-size: 22px;
+            color: var(--text-primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
-        h2 i {
-            color: #667eea;
-        }
-        h3 {
-            margin: 15px 0 10px;
+
+        h3 i {
+            color: var(--accent);
             font-size: 20px;
-            color: #2c3e50;
         }
+
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 24px;
         }
+
         .form-group {
             margin-bottom: 5px;
+            position: relative;
         }
+
         .full-width {
             grid-column: span 2;
         }
+
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #34495e;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--text-primary);
             font-size: 15px;
+            transition: color 0.3s;
         }
+
         label i {
             margin-left: 8px;
-            color: #667eea;
+            color: var(--accent);
             width: 20px;
+            font-size: 16px;
         }
-        input,
-        select,
-        textarea {
+
+        input, select, textarea {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-sm);
             font-size: 15px;
             font-family: inherit;
             transition: all 0.3s;
-            background-color: #f9f9f9;
+            background-color: #f8fafc;
+            color: var(--text-primary);
         }
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #667eea;
+
+        [data-theme="dark"] input,
+        [data-theme="dark"] select,
+        [data-theme="dark"] textarea {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-color: #334155;
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
             background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(16, 185, 129, 0.1);
             outline: none;
+            transform: translateY(-1px);
         }
+
+        [data-theme="dark"] input:focus,
+        [data-theme="dark"] select:focus,
+        [data-theme="dark"] textarea:focus {
+            background-color: rgba(30, 41, 59, 1);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+
         input:disabled {
-            background-color: #e9ecef;
-            color: #495057;
+            background-color: #e2e8f0;
+            color: #64748b;
             cursor: not-allowed;
         }
+
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
-        button[type="submit"],
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        /* أزرار رئيسية */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             color: white;
             border: none;
-            padding: 16px 25px;
+            padding: 16px 30px;
             font-size: 18px;
             border-radius: 50px;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 20px;
+            font-weight: 800;
+            transition: all 0.3s;
+            margin-top: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
         }
-        button[type="submit"]:hover,
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
         }
-        button[type="submit"]:disabled,
-        button:disabled {
-            opacity: 0.6;
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
+
+        .btn-primary i {
+            font-size: 20px;
+        }
+
+        /* رسائل */
         .message {
             margin-top: 20px;
-            padding: 15px 20px;
-            border-radius: 50px;
+            padding: 16px 24px;
+            border-radius: 16px;
             display: none;
             text-align: center;
-            font-weight: 500;
+            font-weight: 700;
+            font-size: 15px;
+            animation: slideIn 0.4s ease-out;
+            backdrop-filter: blur(10px);
         }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
             display: block;
         }
+
         .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
             display: block;
         }
+
         .note {
             font-size: 13px;
-            color: #7f8c8d;
-            margin-top: 5px;
+            color: var(--text-secondary);
+            margin-top: 8px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            font-weight: 500;
         }
+
         .note i {
-            color: #667eea;
+            color: var(--gold);
             font-size: 14px;
         }
+
+        /* شبكة الصور */
         .images-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
+            gap: 16px;
+            margin-top: 12px;
         }
+
         .image-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 12px;
-            background: #fff;
-            transition: all 0.3s;
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius);
+            padding: 16px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            cursor: pointer;
+            overflow: hidden;
         }
+
+        [data-theme="dark"] .image-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border-color: #334155;
+        }
+
         .image-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
+
+        .image-card.has-image {
+            border-style: solid;
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+        }
+
         .image-upload {
             text-align: center;
-            cursor: pointer;
         }
+
         .image-upload i {
-            font-size: 36px;
-            color: #667eea;
-            margin-bottom: 6px;
+            font-size: 32px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            transition: all 0.3s;
         }
+
+        .image-card:hover .image-upload i {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
         .image-upload span {
             display: block;
             font-size: 13px;
-            color: #555;
-            margin-bottom: 6px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
         }
+
         .image-upload input {
             display: none;
         }
+
         .image-preview {
             max-width: 100%;
             max-height: 120px;
             border-radius: 8px;
-            margin-top: 6px;
+            margin-top: 8px;
             display: none;
             object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+
         .image-filename {
-            font-size: 10px;
-            color: #2c3e50;
-            margin-top: 4px;
+            font-size: 11px;
+            color: var(--text-primary);
+            margin-top: 6px;
             word-break: break-all;
             text-align: center;
+            font-weight: 600;
         }
+
         .image-card .remove-img {
             position: absolute;
-            top: 6px;
-            left: 6px;
-            background: #dc3545;
+            top: 8px;
+            left: 8px;
+            background: var(--danger);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 26px;
-            height: 26px;
-            font-size: 14px;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
             line-height: 1;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s;
+            z-index: 2;
         }
+
         .image-card .remove-img.show {
             display: flex;
         }
+
+        .image-card .remove-img:hover {
+            transform: scale(1.2) rotate(90deg);
+            background: #dc2626;
+        }
+
         .add-image-btn {
-            background: #e9ecef;
-            border: 2px dashed #667eea;
-            border-radius: 16px;
-            padding: 20px 10px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius);
+            padding: 24px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
@@ -247,162 +502,442 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #667eea;
-            font-weight: 600;
-            min-height: 140px;
+            color: var(--accent);
+            font-weight: 700;
+            min-height: 160px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .add-image-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .add-image-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
         .add-image-btn:hover {
-            background: #f1f3f5;
-            border-color: #764ba2;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
         }
+
         .add-image-btn i {
-            font-size: 36px;
-            margin-bottom: 8px;
+            font-size: 40px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
         }
+
+        .add-image-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
         .add-image-btn input {
             display: none;
         }
 
-        /* checkbox grid */
+        /* شبكة الاختيارات */
         .checkbox-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-            margin-top: 6px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+            margin-top: 8px;
         }
+
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: #f8f9fa;
-            padding: 10px 14px;
-            border-radius: 12px;
-            border: 2px solid #e0e0e0;
-            transition: all 0.2s;
+            gap: 12px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
+
+        [data-theme="dark"] .checkbox-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border-color: #334155;
+        }
+
+        .checkbox-item::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
         .checkbox-item:hover {
-            border-color: #667eea;
-            background: #f1f3f5;
+            border-color: var(--accent);
+            transform: translateX(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
+
+        .checkbox-item:hover::before {
+            transform: scaleY(1);
+        }
+
         .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #667eea;
+            width: 22px;
+            height: 22px;
+            accent-color: var(--accent);
             cursor: pointer;
             flex-shrink: 0;
         }
+
         .checkbox-item label {
             margin: 0;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            color: #2c3e50;
+            color: var(--text-primary);
             flex: 1;
         }
 
+        .checkbox-item.checked {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .checkbox-item.checked::before {
+            transform: scaleY(1);
+        }
+
+        /* عرض رقم السيارة */
         .car-number-display {
-            background: #f1f3f5;
-            padding: 14px 18px;
-            border-radius: 12px;
-            border: 2px solid #667eea;
-            font-size: 20px;
-            font-weight: bold;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            padding: 18px 24px;
+            border-radius: var(--radius);
+            border: 2px solid var(--accent);
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
             text-align: center;
             letter-spacing: 2px;
-            min-height: 55px;
+            min-height: 65px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-        }
-        .car-number-display i {
-            color: #667eea;
-            font-size: 20px;
-        }
-        .car-number-display .empty-hint {
-            font-weight: normal;
-            font-size: 16px;
-            color: #adb5bd;
-        }
-
-        .download-section {
-            margin-top: 30px;
-            border-top: 2px dashed #ccc;
-            padding-top: 20px;
-        }
-        .download-flex {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-        .download-flex>div {
-            flex: 2;
-            min-width: 200px;
-        }
-        .download-flex button {
-            background: #28a745;
-            margin-top: 24px;
-            width: auto;
-            padding: 12px 25px;
-        }
-        .download-flex .btn-date {
-            background: #17a2b8;
-        }
-        .progress-container {
-            margin-top: 10px;
-            display: none;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 10px;
+            gap: 12px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
             overflow: hidden;
         }
+
+        [data-theme="dark"] .car-number-display {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .car-number-display::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+        }
+
+        .car-number-display i {
+            color: var(--accent);
+            font-size: 24px;
+        }
+
+        .car-number-display .empty-hint {
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* قسم التحميل */
+        .download-section {
+            margin-top: 40px;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 30px;
+            position: relative;
+        }
+
+        .download-section::before {
+            content: '\f019';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(50%);
+            background: var(--glass-bg);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 16px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .download-flex {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .download-flex > div {
+            flex: 2;
+            min-width: 220px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-hover) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-download:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-date {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-date:hover {
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.4);
+        }
+
+        /* شريط التقدم */
+        .progress-container {
+            margin-top: 16px;
+            display: none;
+            background: rgba(241, 245, 249, 0.8);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid #e2e8f0;
+        }
+
+        [data-theme="dark"] .progress-container {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: #334155;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
         .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #28a745, #20c997);
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 10px;
-        }
-        .progress-text {
-            text-align: center;
-            margin-top: 5px;
-            font-size: 14px;
-            color: #555;
+            position: relative;
+            overflow: hidden;
         }
 
-        @media (max-width: 600px) {
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 15px;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        /* فاصل أقسام */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+            margin: 30px 0;
+            position: relative;
+        }
+
+        [data-theme="dark"] .section-divider {
+            background: linear-gradient(90deg, transparent, #334155, transparent);
+        }
+
+        /* تأثيرات إضافية للجوال */
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 18px;
             }
+
             .full-width {
                 grid-column: span 1;
             }
+
             .images-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
+
             .checkbox-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
             }
+
             .download-flex {
                 flex-direction: column;
                 align-items: stretch;
             }
+
             .download-flex button {
-                margin-top: 5px;
                 width: 100%;
             }
+
+            .theme-toggle {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* تأثيرات خاصة */
+        .glow-text {
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .counter-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 800;
+            margin-right: 8px;
+        }
+
+        /* حالة التحميل */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* تأثيرات عند التركيز */
+        .form-group:focus-within label {
+            color: var(--accent);
+        }
+
+        .form-group:focus-within label i {
+            transform: scale(1.2);
+        }
+
+        /* تنسيق select */
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 16px center;
+            padding-left: 40px;
+        }
+
+        /* تحسين التاريخ */
+        input[type="date"] {
+            padding-left: 16px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2><i class="fas fa-car"></i> صيانة السيارات - الفنين</h2>
+        <!-- زر الوضع الليلي -->
+        <button class="theme-toggle" id="themeToggle" title="تبديل الوضع الليلي">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <div class="header">
+            <h2><i class="fas fa-car-side"></i> صيانة السيارات - الفنين</h2>
+            <div class="subtitle">نظام إدارة وتتبع صيانة السيارات المتكامل</div>
+        </div>
 
         <!-- النموذج -->
         <form id="dataForm">
@@ -410,7 +945,7 @@
 
                 <!-- الميداني -->
                 <div class="form-group full-width">
-                    <label><i class="fas fa-user"></i> الميداني</label>
+                    <label><i class="fas fa-user-tie"></i> الميداني</label>
                     <select id="fieldOfficer" name="fieldOfficer" required>
                         <option value="">-- اختر الميداني --</option>
                         <option value="علاء">علاء</option>
@@ -445,7 +980,7 @@
 
                 <!-- أنواع الصيانة (اختيارات متعددة) -->
                 <div class="form-group full-width">
-                    <label><i class="fas fa-tools"></i> نوع الصيانة (اختر ما يناسب)</label>
+                    <label><i class="fas fa-tools"></i> نوع الصيانة <span class="counter-badge" id="maintCount">0</span></label>
                     <div class="checkbox-grid" id="maintenanceCheckboxes">
                         <div class="checkbox-item">
                             <input type="checkbox" id="maint_oil" value="غيار زيت">
@@ -476,36 +1011,40 @@
                             <label for="maint_gears">تغير فيتيس</label>
                         </div>
                     </div>
-                    <div class="note"><i class="fas fa-info-circle"></i> تأكد من الاخيتار الذى ستختاره"</div>
+                    <div class="note"><i class="fas fa-check-double"></i> تأكد من اختيار جميع أنواع الصيانة المطلوبة</div>
                 </div>
 
                 <!-- ملاحظات -->
                 <div class="form-group full-width">
-                    <label><i class="fas fa-pen"></i> ملاحظات إضافية</label>
+                    <label><i class="fas fa-pen-fancy"></i> ملاحظات إضافية</label>
                     <textarea id="notes" name="notes" placeholder="أي ملاحظات عن الصيانة..."></textarea>
                 </div>
 
                 <!-- صور السيارة (أكثر من 6) -->
                 <div class="form-group full-width">
-                    <label><i class="fas fa-images"></i> صور السيارة (6 صور كحد أدنى)</label>
+                    <label><i class="fas fa-images"></i> صور السيارة <span class="counter-badge" id="imgCount">0/6</span></label>
                     <div class="images-grid" id="imagesGrid"></div>
                     <div class="add-image-btn" id="addImageBtn">
                         <i class="fas fa-plus-circle"></i>
                         <span>إضافة صورة إضافية</span>
                         <input type="file" accept="image/*" capture="environment" multiple>
                     </div>
-                    <div class="note"><i class="fas fa-info-circle"></i> الحد الأدنى 6 صور، يمكنك إضافة المزيد</div>
+                    <div class="note"><i class="fas fa-camera"></i> الحد الأدنى 6 صور، يمكنك إضافة المزيد حسب الحاجة</div>
                 </div>
 
             </div>
 
-            <button type="submit" id="submitBtn"><i class="fas fa-paper-plane"></i> إرسال البيانات</button>
+            <button type="submit" id="submitBtn" class="btn-primary">
+                <i class="fas fa-paper-plane"></i> إرسال البيانات
+            </button>
         </form>
         <div id="message" class="message"></div>
 
+        <div class="section-divider"></div>
+
         <!-- قسم التحميل -->
         <div class="download-section">
-            <h3><i class="fas fa-download"></i> تحميل الصور المحفوظة</h3>
+            <h3><i class="fas fa-cloud-download-alt"></i> تحميل الصور المحفوظة</h3>
 
             <!-- تحميل برقم السيارة -->
             <div class="download-flex">
@@ -514,22 +1053,26 @@
                     <input type="text" id="downloadCarNumber" placeholder="أدخل رقم السيارة (مثال: أ ١٢٣٤٥)">
                 </div>
                 <div>
-                    <button type="button" id="downloadBtn"><i class="fas fa-file-archive"></i> تحميل صور هذه السيارة (ZIP)</button>
+                    <button type="button" id="downloadBtn" class="btn-download">
+                        <i class="fas fa-file-archive"></i> تحميل صور هذه السيارة (ZIP)
+                    </button>
                 </div>
             </div>
-            <div id="downloadMessage" class="note" style="margin-top: 10px;"></div>
+            <div id="downloadMessage" class="note" style="margin-top: 12px;"></div>
 
             <!-- تحميل بالتاريخ -->
-            <div class="download-flex" style="margin-top:20px; border-top:1px dashed #ddd; padding-top:20px;">
+            <div class="download-flex" style="margin-top:24px;">
                 <div>
                     <label><i class="fas fa-calendar-alt"></i> تاريخ الإرسال</label>
                     <input type="date" id="downloadDate">
                 </div>
                 <div>
-                    <button type="button" id="downloadAllByDateBtn" class="btn-date"><i class="fas fa-file-archive"></i> تحميل جميع صور هذا التاريخ (ZIP)</button>
+                    <button type="button" id="downloadAllByDateBtn" class="btn-download btn-date">
+                        <i class="fas fa-file-archive"></i> تحميل جميع صور هذا التاريخ (ZIP)
+                    </button>
                 </div>
             </div>
-            <div id="downloadDateMessage" class="note" style="margin-top: 10px;"></div>
+            <div id="downloadDateMessage" class="note" style="margin-top: 12px;"></div>
 
             <!-- شريط التقدم -->
             <div class="progress-container" id="progressContainer">
@@ -547,8 +1090,30 @@
             // الثوابت
             // ============================
             const IMGBB_API_KEY = '80e250fa77e32dc6df4bbd54eb7af292';
-            const APPS_SCRIPT_URL =
-            'https://script.google.com/macros/s/AKfycbyjayluiwveWpVWAxycnVjO6f-M7K0MKU-45_yvrGtqVEoaDNpbxOn8ZImVNu-v1SAgpA/exec';
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjayluiwveWpVWAxycnVjO6f-M7K0MKU-45_yvrGtqVEoaDNpbxOn8ZImVNu-v1SAgpA/exec';
+
+            // ============================
+            // الوضع الليلي
+            // ============================
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            // تحقق من التفضيل المحفوظ
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+
+            function updateThemeIcon(theme) {
+                themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
 
             // ============================
             // إدارة الصور (عدد ديناميكي)
@@ -560,9 +1125,18 @@
             const filenameElements = [];
             const removeButtons = [];
             let imageCounter = 0;
-
-            // الحد الأدنى للصور
             const MIN_IMAGES = 6;
+
+            function updateImageCounter() {
+                const filled = imageFiles.filter(f => f !== null).length;
+                const badge = document.getElementById('imgCount');
+                badge.textContent = `${filled}/${MIN_IMAGES}`;
+                if (filled >= MIN_IMAGES) {
+                    badge.style.background = 'var(--accent)';
+                } else {
+                    badge.style.background = 'var(--gold)';
+                }
+            }
 
             function createImageCard(index) {
                 const card = document.createElement('div');
@@ -591,7 +1165,7 @@
 
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'remove-img';
-                removeBtn.innerHTML = '×';
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
                 removeBtn.title = 'حذف الصورة';
                 removeBtn.type = 'button';
 
@@ -603,7 +1177,6 @@
                 card.appendChild(uploadDiv);
                 card.appendChild(removeBtn);
 
-                // الأحداث
                 fileInput.addEventListener('change', function(event) {
                     const file = event.target.files[0];
                     if (file) {
@@ -613,10 +1186,12 @@
                         reader.onload = function(e) {
                             previewImg.src = e.target.result;
                             previewImg.style.display = 'block';
+                            card.classList.add('has-image');
                         };
                         reader.readAsDataURL(file);
                         removeBtn.classList.add('show');
                         updateAddButtonVisibility();
+                        updateImageCounter();
                     }
                 });
 
@@ -634,8 +1209,10 @@
                     filenameSpan.textContent = '';
                     fileInput.value = '';
                     removeBtn.classList.remove('show');
+                    card.classList.remove('has-image');
                     span.textContent = `صورة ${index + 1}`;
                     updateAddButtonVisibility();
+                    updateImageCounter();
                 });
 
                 previewElements[index] = previewImg;
@@ -644,14 +1221,13 @@
                 return card;
             }
 
-            // إنشاء الصور الأولية (6)
             for (let i = 0; i < MIN_IMAGES; i++) {
                 imageFiles.push(null);
                 imagesGrid.appendChild(createImageCard(i));
                 imageCounter++;
             }
+            updateImageCounter();
 
-            // زر إضافة صورة
             const addInput = addImageBtn.querySelector('input[type="file"]');
             addInput.addEventListener('change', function(e) {
                 const files = e.target.files;
@@ -662,7 +1238,6 @@
                         const card = createImageCard(idx);
                         imagesGrid.appendChild(card);
                         imageCounter++;
-                        // محاكاة اختيار الملف
                         const fileInput = card.querySelector('input[type="file"]');
                         const dt = new DataTransfer();
                         dt.items.add(file);
@@ -683,11 +1258,7 @@
 
             function updateAddButtonVisibility() {
                 const hasEmpty = imageFiles.some(f => f === null);
-                if (hasEmpty) {
-                    addImageBtn.style.display = 'none';
-                } else {
-                    addImageBtn.style.display = 'flex';
-                }
+                addImageBtn.style.display = hasEmpty ? 'none' : 'flex';
                 const cards = imagesGrid.querySelectorAll('.image-card');
                 cards.forEach((card, idx) => {
                     const span = card.querySelector('.image-upload span');
@@ -712,7 +1283,7 @@
 
                 if (letters || numbers) {
                     full = letters + (numbers ? ' ' + numbers : '');
-                    displayHtml += `<span style="font-weight:bold;color:#2c3e50;">${full}</span>`;
+                    displayHtml += `<span style="font-weight:800;color:var(--text-primary);letter-spacing:3px;">${full}</span>`;
                     carNumberDisplay.innerHTML = displayHtml;
                     carNumberFull.value = full;
                 } else {
@@ -723,6 +1294,34 @@
 
             carLetters.addEventListener('input', updateCarNumber);
             carNumbers.addEventListener('input', updateCarNumber);
+
+            // ============================
+            // عداد أنواع الصيانة
+            // ============================
+            const maintenanceCheckboxes = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]');
+            const maintCountBadge = document.getElementById('maintCount');
+
+            function updateMaintCount() {
+                const checked = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]:checked').length;
+                maintCountBadge.textContent = checked;
+                if (checked > 0) {
+                    maintCountBadge.style.background = 'var(--accent)';
+                } else {
+                    maintCountBadge.style.background = 'var(--gold)';
+                }
+            }
+
+            maintenanceCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    updateMaintCount();
+                    const item = this.closest('.checkbox-item');
+                    if (this.checked) {
+                        item.classList.add('checked');
+                    } else {
+                        item.classList.remove('checked');
+                    }
+                });
+            });
 
             // ============================
             // رفع الصور إلى ImgBB
@@ -747,7 +1346,7 @@
             }
 
             // ============================
-            // إرسال النموذج (مع جمع خيارات الصيانة ككائن)
+            // إرسال النموذج
             // ============================
             const form = document.getElementById('dataForm');
             const messageDiv = document.getElementById('message');
@@ -780,15 +1379,13 @@
                     return showMessage(`الرجاء إرفاق ${MIN_IMAGES} صور على الأقل (تم إرفاق ${filledImages.length})`, 'error');
                 }
 
-                // ** التعديل هنا: جمع خيارات الصيانة في كائن (مفتاح = قيمة checkbox، قيمة = true/false) **
-                const maintenanceCheckboxes = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]');
                 const maintenance = {};
                 maintenanceCheckboxes.forEach(cb => {
-                    maintenance[cb.value] = cb.checked; // true أو false
+                    maintenance[cb.value] = cb.checked;
                 });
 
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري رفع الصور...';
+                submitBtn.innerHTML = '<span class="loading-spinner"></span> جاري رفع الصور...';
 
                 try {
                     const validFiles = imageFiles.filter(f => f !== null);
@@ -807,7 +1404,7 @@
                         carLetters: carLetters.value.trim(),
                         carNumbers: carNumbers.value.trim(),
                         carNumberFull: carFull,
-                        maintenance: maintenance, // إرسال الكائن بدلاً من المصفوفة
+                        maintenance: maintenance,
                         notes: notes,
                         imageUrls: imageUrls
                     };
@@ -827,8 +1424,7 @@
                         showMessage('✅ تم إرسال البيانات بنجاح!', 'success');
                         form.reset();
                         carNumberFull.value = '';
-                        carNumberDisplay.innerHTML =
-                            `<i class="fas fa-car"></i> <span class="empty-hint">أدخل الحروف والأرقام أعلاه</span>`;
+                        carNumberDisplay.innerHTML = `<i class="fas fa-car"></i> <span class="empty-hint">أدخل الحروف والأرقام أعلاه</span>`;
                         imagesGrid.innerHTML = '';
                         imageFiles.length = 0;
                         previewElements.length = 0;
@@ -840,9 +1436,13 @@
                             imagesGrid.appendChild(createImageCard(i));
                             imageCounter++;
                         }
-                        document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]').forEach(cb => cb.checked =
-                            false);
+                        maintenanceCheckboxes.forEach(cb => {
+                            cb.checked = false;
+                            cb.closest('.checkbox-item').classList.remove('checked');
+                        });
                         updateAddButtonVisibility();
+                        updateImageCounter();
+                        updateMaintCount();
                     } else {
                         showMessage('❌ فشل الإرسال: ' + (result.error || 'خطأ غير معروف'), 'error');
                     }
@@ -892,12 +1492,12 @@
                 const carNum = downloadCar.value.trim();
                 if (!carNum) {
                     downloadMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> الرجاء إدخال رقم السيارة';
-                    downloadMsg.style.color = '#dc3545';
+                    downloadMsg.style.color = 'var(--danger)';
                     return;
                 }
 
                 downloadMsg.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري البحث عن الصور...';
-                downloadMsg.style.color = '#007bff';
+                downloadMsg.style.color = '#3b82f6';
                 downloadBtn.disabled = true;
                 showProgress(true);
                 updateProgress(0, '0%');
@@ -945,12 +1545,11 @@
                     const content = await zip.generateAsync({ type: 'blob' });
                     saveAs(content, `صور_سيارة_${carNum}.zip`);
 
-                    downloadMsg.innerHTML =
-                        `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة (مصغرة بحجم 800 بكسل) من أصل ${imageUrls.length} بنجاح.`;
-                    downloadMsg.style.color = '#28a745';
+                    downloadMsg.innerHTML = `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة (مصغرة بحجم 800 بكسل) من أصل ${imageUrls.length} بنجاح.`;
+                    downloadMsg.style.color = 'var(--accent)';
                 } catch (err) {
                     downloadMsg.innerHTML = `<i class="fas fa-times-circle"></i> خطأ: ${err.message}`;
-                    downloadMsg.style.color = '#dc3545';
+                    downloadMsg.style.color = 'var(--danger)';
                 } finally {
                     downloadBtn.disabled = false;
                     setTimeout(() => {
@@ -972,12 +1571,12 @@
                 const dateVal = downloadDateInput.value;
                 if (!dateVal) {
                     downloadDateMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> الرجاء اختيار تاريخ';
-                    downloadDateMsg.style.color = '#dc3545';
+                    downloadDateMsg.style.color = 'var(--danger)';
                     return;
                 }
 
                 downloadDateMsg.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري البحث عن السجلات...';
-                downloadDateMsg.style.color = '#007bff';
+                downloadDateMsg.style.color = '#3b82f6';
                 downloadDateBtn.disabled = true;
                 showProgress(true);
                 updateProgress(0, '0%');
@@ -1001,8 +1600,7 @@
                         throw new Error('لا توجد صور في السجلات');
                     }
 
-                    downloadDateMsg.innerHTML =
-                        `تم العثور على ${records.length} سجل (${totalImages} صورة). جاري التحميل...`;
+                    downloadDateMsg.innerHTML = `تم العثور على ${records.length} سجل (${totalImages} صورة). جاري التحميل...`;
 
                     const zip = new JSZip();
                     let downloaded = 0;
@@ -1016,8 +1614,7 @@
                                 const blob = await fetchImageAsBlob(url);
                                 let ext = url.split('.').pop().split('?')[0];
                                 if (!ext.match(/jpg|jpeg|png|gif|webp/i)) ext = 'jpg';
-                                const filename =
-                                    `سيارة_${carNum}_صورة${imgIdx+1}.${ext}`;
+                                const filename = `سيارة_${carNum}_صورة${imgIdx+1}.${ext}`;
                                 zip.file(filename, blob, { binary: true });
                                 downloaded++;
                                 processed++;
@@ -1025,8 +1622,7 @@
                                 updateProgress(percent, `${percent}% (${downloaded}/${totalImages})`);
                             } catch (err) {
                                 console.warn(`خطأ في صورة (سيارة ${carNum}, صورة ${imgIdx+1}):`, err);
-                                zip.file(`error_${carNum}_${imgIdx+1}.txt`,
-                                    `فشل تحميل الصورة: ${url}\n${err.message}`);
+                                zip.file(`error_${carNum}_${imgIdx+1}.txt`, `فشل تحميل الصورة: ${url}\n${err.message}`);
                                 processed++;
                             }
                         });
@@ -1041,12 +1637,11 @@
                     const content = await zip.generateAsync({ type: 'blob' });
                     saveAs(content, `صور_السيارات_تاريخ_${dateVal}.zip`);
 
-                    downloadDateMsg.innerHTML =
-                        `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة من ${totalImages} (مصغرة بحجم 800 بكسل) لـ ${records.length} سجل.`;
-                    downloadDateMsg.style.color = '#28a745';
+                    downloadDateMsg.innerHTML = `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة من ${totalImages} (مصغرة بحجم 800 بكسل) لـ ${records.length} سجل.`;
+                    downloadDateMsg.style.color = 'var(--accent)';
                 } catch (err) {
                     downloadDateMsg.innerHTML = `<i class="fas fa-times-circle"></i> خطأ: ${err.message}`;
-                    downloadDateMsg.style.color = '#dc3545';
+                    downloadDateMsg.style.color = 'var(--danger)';
                 } finally {
                     downloadDateBtn.disabled = false;
                     setTimeout(() => {
