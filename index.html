@@ -476,7 +476,7 @@
                             <label for="maint_gears">تغير فيتيس</label>
                         </div>
                     </div>
-                    <div class="note"><i class="fas fa-info-circle"></i> يمكنك اختيار أكثر من نوع</div>
+                    <div class="note"><i class="fas fa-info-circle"></i> سيتم تسجيل كل اختيار في عمود مستقل بقيمة "نعم" أو "لا"</div>
                 </div>
 
                 <!-- ملاحظات -->
@@ -548,7 +548,7 @@
             // ============================
             const IMGBB_API_KEY = '80e250fa77e32dc6df4bbd54eb7af292';
             const APPS_SCRIPT_URL =
-            'https://script.google.com/macros/s/AKfycbzYQB_C2mCt2OiRbissZEHdfDuMdfCdliHxDtPL4134Z6PDtbUH8pwziA99uLQ4vhjLaw/exec';
+            'https://script.google.com/macros/s/AKfycbyjayluiwveWpVWAxycnVjO6f-M7K0MKU-45_yvrGtqVEoaDNpbxOn8ZImVNu-v1SAgpA/exec';
 
             // ============================
             // إدارة الصور (عدد ديناميكي)
@@ -634,7 +634,6 @@
                     filenameSpan.textContent = '';
                     fileInput.value = '';
                     removeBtn.classList.remove('show');
-                    // إعادة تعيين رقم الصورة في العرض
                     span.textContent = `صورة ${index + 1}`;
                     updateAddButtonVisibility();
                 });
@@ -684,21 +683,17 @@
 
             function updateAddButtonVisibility() {
                 const hasEmpty = imageFiles.some(f => f === null);
-                // إذا كان هناك أي خانة فارغة نخفي زر الإضافة
                 if (hasEmpty) {
                     addImageBtn.style.display = 'none';
                 } else {
                     addImageBtn.style.display = 'flex';
                 }
-                // تحديث أرقام الصور
                 const cards = imagesGrid.querySelectorAll('.image-card');
                 cards.forEach((card, idx) => {
                     const span = card.querySelector('.image-upload span');
                     if (span) span.textContent = `صورة ${idx + 1}`;
                 });
             }
-
-            // في البداية هناك 6 خانات فارغة، نخفي زر الإضافة
             updateAddButtonVisibility();
 
             // ============================
@@ -752,7 +747,7 @@
             }
 
             // ============================
-            // إرسال النموذج
+            // إرسال النموذج (مع جمع خيارات الصيانة ككائن)
             // ============================
             const form = document.getElementById('dataForm');
             const messageDiv = document.getElementById('message');
@@ -780,21 +775,22 @@
                 if (!fieldOfficer) return showMessage('الرجاء اختيار الميداني', 'error');
                 if (!carFull) return showMessage('الرجاء إدخال حروف وأرقام السيارة', 'error');
 
-                // التحقق من وجود 6 صور على الأقل
                 const filledImages = imageFiles.filter(f => f !== null);
                 if (filledImages.length < MIN_IMAGES) {
                     return showMessage(`الرجاء إرفاق ${MIN_IMAGES} صور على الأقل (تم إرفاق ${filledImages.length})`, 'error');
                 }
 
-                // أنواع الصيانة
-                const checkboxes = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]:checked');
-                const maintenanceTypes = Array.from(checkboxes).map(cb => cb.value);
+                // ** التعديل هنا: جمع خيارات الصيانة في كائن (مفتاح = قيمة checkbox، قيمة = true/false) **
+                const maintenanceCheckboxes = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]');
+                const maintenance = {};
+                maintenanceCheckboxes.forEach(cb => {
+                    maintenance[cb.value] = cb.checked; // true أو false
+                });
 
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري رفع الصور...';
 
                 try {
-                    // رفع جميع الصور (غير الفارغة)
                     const validFiles = imageFiles.filter(f => f !== null);
                     let imageUrls;
                     try {
@@ -811,7 +807,7 @@
                         carLetters: carLetters.value.trim(),
                         carNumbers: carNumbers.value.trim(),
                         carNumberFull: carFull,
-                        maintenanceTypes: maintenanceTypes,
+                        maintenance: maintenance, // إرسال الكائن بدلاً من المصفوفة
                         notes: notes,
                         imageUrls: imageUrls
                     };
@@ -829,12 +825,10 @@
 
                     if (result.result === 'success') {
                         showMessage('✅ تم إرسال البيانات بنجاح!', 'success');
-                        // إعادة تعيين النموذج
                         form.reset();
                         carNumberFull.value = '';
                         carNumberDisplay.innerHTML =
                             `<i class="fas fa-car"></i> <span class="empty-hint">أدخل الحروف والأرقام أعلاه</span>`;
-                        // إزالة جميع الصور وإعادة إنشاء 6 خانات فارغة
                         imagesGrid.innerHTML = '';
                         imageFiles.length = 0;
                         previewElements.length = 0;
@@ -846,7 +840,6 @@
                             imagesGrid.appendChild(createImageCard(i));
                             imageCounter++;
                         }
-                        // إلغاء تحديد checkbox
                         document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]').forEach(cb => cb.checked =
                             false);
                         updateAddButtonVisibility();
@@ -953,7 +946,7 @@
                     saveAs(content, `صور_سيارة_${carNum}.zip`);
 
                     downloadMsg.innerHTML =
-                    `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة (مصغرة بحجم 800 بكسل) من أصل ${imageUrls.length} بنجاح.`;
+                        `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة (مصغرة بحجم 800 بكسل) من أصل ${imageUrls.length} بنجاح.`;
                     downloadMsg.style.color = '#28a745';
                 } catch (err) {
                     downloadMsg.innerHTML = `<i class="fas fa-times-circle"></i> خطأ: ${err.message}`;
