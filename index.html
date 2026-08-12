@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصوير صيانة السيارات - الميدانيين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        h2 i {
+            color: #667eea;
+        }
+        h3 {
+            margin: 15px 0 10px;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 5px;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 15px;
+        }
+        label i {
+            margin-left: 8px;
+            color: #667eea;
+            width: 20px;
+        }
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #667eea;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        input:disabled {
+            background-color: #e9ecef;
+            color: #495057;
+            cursor: not-allowed;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button[type="submit"],
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 25px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button[type="submit"]:hover,
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        button[type="submit"]:disabled,
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 50px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        .note {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .note i {
+            color: #667eea;
+            font-size: 14px;
+        }
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .image-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 12px;
+            background: #fff;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .image-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .image-upload {
+            text-align: center;
+            cursor: pointer;
+        }
+        .image-upload i {
+            font-size: 36px;
+            color: #667eea;
+            margin-bottom: 6px;
+        }
+        .image-upload span {
+            display: block;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .image-upload input {
+            display: none;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 8px;
+            margin-top: 6px;
+            display: none;
+            object-fit: cover;
+        }
+        .image-filename {
+            font-size: 10px;
+            color: #2c3e50;
+            margin-top: 4px;
+            word-break: break-all;
+            text-align: center;
+        }
+        .image-card .remove-img {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .image-card .remove-img.show {
+            display: flex;
+        }
+        .add-image-btn {
+            background: #e9ecef;
+            border: 2px dashed #667eea;
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-weight: 600;
+            min-height: 140px;
+        }
+        .add-image-btn:hover {
+            background: #f1f3f5;
+            border-color: #764ba2;
+        }
+        .add-image-btn i {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+        .add-image-btn input {
+            display: none;
+        }
+
+        /* checkbox grid */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f1f3f5;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .car-number-display {
+            background: #f1f3f5;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            letter-spacing: 2px;
+            min-height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .car-number-display i {
+            color: #667eea;
+            font-size: 20px;
+        }
+        .car-number-display .empty-hint {
+            font-weight: normal;
+            font-size: 16px;
+            color: #adb5bd;
+        }
+
+        .download-section {
+            margin-top: 30px;
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+        }
+        .download-flex {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .download-flex>div {
+            flex: 2;
+            min-width: 200px;
+        }
+        .download-flex button {
+            background: #28a745;
+            margin-top: 24px;
+            width: auto;
+            padding: 12px 25px;
+        }
+        .download-flex .btn-date {
+            background: #17a2b8;
+        }
+        .progress-container {
+            margin-top: 10px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+            .images-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .checkbox-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .download-flex {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .download-flex button {
+                margin-top: 5px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-car"></i> صيانة السيارات - الميدانيين</h2>
+
+        <!-- النموذج -->
+        <form id="dataForm">
+            <div class="form-grid">
+
+                <!-- الميداني -->
+                <div class="form-group full-width">
+                    <label><i class="fas fa-user"></i> الميداني</label>
+                    <select id="fieldOfficer" name="fieldOfficer" required>
+                        <option value="">-- اختر الميداني --</option>
+                        <option value="علاء">علاء</option>
+                        <option value="الأسطورة">الأسطورة</option>
+                        <option value="هشام">هشام</option>
+                        <option value="احمد عاطف">احمد عاطف</option>
+                        <option value="شريف">شريف</option>
+                        <option value="فنى زيادة">فنى زيادة</option>
+                    </select>
+                </div>
+
+                <!-- رقم السيارة - حروف + أرقام -->
+                <div class="form-group">
+                    <label><i class="fas fa-font"></i> حروف السيارة</label>
+                    <input type="text" id="carLetters" placeholder="مثال: أ ب ج" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> أرقام السيارة</label>
+                    <input type="text" id="carNumbers" placeholder="مثال: ١٢٣٤٥" maxlength="10">
+                </div>
+
+                <!-- رقم السيارة الكامل (للقراءة فقط) -->
+                <div class="form-group full-width">
+                    <label><i class="fas fa-id-card"></i> رقم السيارة (مجمّع)</label>
+                    <div class="car-number-display" id="carNumberDisplay">
+                        <i class="fas fa-car"></i>
+                        <span class="empty-hint">أدخل الحروف والأرقام أعلاه</span>
+                    </div>
+                    <input type="hidden" id="carNumberFull" name="carNumberFull">
+                    <div class="note"><i class="fas fa-info-circle"></i> يتم تجميع الحروف والأرقام تلقائياً</div>
+                </div>
+
+                <!-- أنواع الصيانة (اختيارات متعددة) -->
+                <div class="form-group full-width">
+                    <label><i class="fas fa-tools"></i> نوع الصيانة (اختر ما يناسب)</label>
+                    <div class="checkbox-grid" id="maintenanceCheckboxes">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_oil" value="غيار زيت">
+                            <label for="maint_oil">غيار زيت</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_tires" value="تغير كفرات">
+                            <label for="maint_tires">تغير كفرات</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_airFilter" value="تغير فلتر هواء">
+                            <label for="maint_airFilter">تغير فلتر هواء</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_oilFilter" value="تغير فلتر زيت">
+                            <label for="maint_oilFilter">تغير فلتر زيت</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_acFilter" value="تغير فلتر تكيف">
+                            <label for="maint_acFilter">تغير فلتر تكيف</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_shocks" value="تغير مساعدين">
+                            <label for="maint_shocks">تغير مساعدين</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="maint_gears" value="تغير فيتيس">
+                            <label for="maint_gears">تغير فيتيس</label>
+                        </div>
+                    </div>
+                    <div class="note"><i class="fas fa-info-circle"></i> يمكنك اختيار أكثر من نوع</div>
+                </div>
+
+                <!-- ملاحظات -->
+                <div class="form-group full-width">
+                    <label><i class="fas fa-pen"></i> ملاحظات إضافية</label>
+                    <textarea id="notes" name="notes" placeholder="أي ملاحظات عن الصيانة..."></textarea>
+                </div>
+
+                <!-- صور السيارة (أكثر من 6) -->
+                <div class="form-group full-width">
+                    <label><i class="fas fa-images"></i> صور السيارة (6 صور كحد أدنى)</label>
+                    <div class="images-grid" id="imagesGrid"></div>
+                    <div class="add-image-btn" id="addImageBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>إضافة صورة إضافية</span>
+                        <input type="file" accept="image/*" capture="environment" multiple>
+                    </div>
+                    <div class="note"><i class="fas fa-info-circle"></i> الحد الأدنى 6 صور، يمكنك إضافة المزيد</div>
+                </div>
+
+            </div>
+
+            <button type="submit" id="submitBtn"><i class="fas fa-paper-plane"></i> إرسال البيانات</button>
+        </form>
+        <div id="message" class="message"></div>
+
+        <!-- قسم التحميل -->
+        <div class="download-section">
+            <h3><i class="fas fa-download"></i> تحميل الصور المحفوظة</h3>
+
+            <!-- تحميل برقم السيارة -->
+            <div class="download-flex">
+                <div>
+                    <label><i class="fas fa-id-card"></i> رقم السيارة</label>
+                    <input type="text" id="downloadCarNumber" placeholder="أدخل رقم السيارة (مثال: أ ١٢٣٤٥)">
+                </div>
+                <div>
+                    <button type="button" id="downloadBtn"><i class="fas fa-file-archive"></i> تحميل صور هذه السيارة (ZIP)</button>
+                </div>
+            </div>
+            <div id="downloadMessage" class="note" style="margin-top: 10px;"></div>
+
+            <!-- تحميل بالتاريخ -->
+            <div class="download-flex" style="margin-top:20px; border-top:1px dashed #ddd; padding-top:20px;">
+                <div>
+                    <label><i class="fas fa-calendar-alt"></i> تاريخ الإرسال</label>
+                    <input type="date" id="downloadDate">
+                </div>
+                <div>
+                    <button type="button" id="downloadAllByDateBtn" class="btn-date"><i class="fas fa-file-archive"></i> تحميل جميع صور هذا التاريخ (ZIP)</button>
+                </div>
+            </div>
+            <div id="downloadDateMessage" class="note" style="margin-top: 10px;"></div>
+
+            <!-- شريط التقدم -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ============================
+            // الثوابت
+            // ============================
+            const IMGBB_API_KEY = '80e250fa77e32dc6df4bbd54eb7af292';
+            const APPS_SCRIPT_URL =
+            'https://script.google.com/macros/s/AKfycbzYQB_C2mCt2OiRbissZEHdfDuMdfCdliHxDtPL4134Z6PDtbUH8pwziA99uLQ4vhjLaw/exec';
+
+            // ============================
+            // إدارة الصور (عدد ديناميكي)
+            // ============================
+            const imagesGrid = document.getElementById('imagesGrid');
+            const addImageBtn = document.getElementById('addImageBtn');
+            const imageFiles = [];
+            const previewElements = [];
+            const filenameElements = [];
+            const removeButtons = [];
+            let imageCounter = 0;
+
+            // الحد الأدنى للصور
+            const MIN_IMAGES = 6;
+
+            function createImageCard(index) {
+                const card = document.createElement('div');
+                card.className = 'image-card';
+                card.dataset.index = index;
+
+                const uploadDiv = document.createElement('div');
+                uploadDiv.className = 'image-upload';
+
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-camera';
+
+                const span = document.createElement('span');
+                span.textContent = `صورة ${index + 1}`;
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.setAttribute('capture', 'environment');
+
+                const previewImg = document.createElement('img');
+                previewImg.className = 'image-preview';
+
+                const filenameSpan = document.createElement('div');
+                filenameSpan.className = 'image-filename';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-img';
+                removeBtn.innerHTML = '×';
+                removeBtn.title = 'حذف الصورة';
+                removeBtn.type = 'button';
+
+                uploadDiv.appendChild(icon);
+                uploadDiv.appendChild(span);
+                uploadDiv.appendChild(fileInput);
+                uploadDiv.appendChild(previewImg);
+                uploadDiv.appendChild(filenameSpan);
+                card.appendChild(uploadDiv);
+                card.appendChild(removeBtn);
+
+                // الأحداث
+                fileInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        imageFiles[index] = file;
+                        filenameSpan.textContent = file.name;
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImg.src = e.target.result;
+                            previewImg.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                        removeBtn.classList.add('show');
+                        updateAddButtonVisibility();
+                    }
+                });
+
+                uploadDiv.addEventListener('click', function(e) {
+                    if (e.target !== fileInput) {
+                        fileInput.click();
+                    }
+                });
+
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    imageFiles[index] = null;
+                    previewImg.style.display = 'none';
+                    previewImg.src = '';
+                    filenameSpan.textContent = '';
+                    fileInput.value = '';
+                    removeBtn.classList.remove('show');
+                    // إعادة تعيين رقم الصورة في العرض
+                    span.textContent = `صورة ${index + 1}`;
+                    updateAddButtonVisibility();
+                });
+
+                previewElements[index] = previewImg;
+                filenameElements[index] = filenameSpan;
+                removeButtons[index] = removeBtn;
+                return card;
+            }
+
+            // إنشاء الصور الأولية (6)
+            for (let i = 0; i < MIN_IMAGES; i++) {
+                imageFiles.push(null);
+                imagesGrid.appendChild(createImageCard(i));
+                imageCounter++;
+            }
+
+            // زر إضافة صورة
+            const addInput = addImageBtn.querySelector('input[type="file"]');
+            addInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    for (const file of files) {
+                        const idx = imageFiles.length;
+                        imageFiles.push(null);
+                        const card = createImageCard(idx);
+                        imagesGrid.appendChild(card);
+                        imageCounter++;
+                        // محاكاة اختيار الملف
+                        const fileInput = card.querySelector('input[type="file"]');
+                        const dt = new DataTransfer();
+                        dt.items.add(file);
+                        fileInput.files = dt.files;
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                    }
+                    addInput.value = '';
+                    updateAddButtonVisibility();
+                }
+            });
+
+            addImageBtn.addEventListener('click', function(e) {
+                if (e.target !== addInput) {
+                    addInput.click();
+                }
+            });
+
+            function updateAddButtonVisibility() {
+                const hasEmpty = imageFiles.some(f => f === null);
+                // إذا كان هناك أي خانة فارغة نخفي زر الإضافة
+                if (hasEmpty) {
+                    addImageBtn.style.display = 'none';
+                } else {
+                    addImageBtn.style.display = 'flex';
+                }
+                // تحديث أرقام الصور
+                const cards = imagesGrid.querySelectorAll('.image-card');
+                cards.forEach((card, idx) => {
+                    const span = card.querySelector('.image-upload span');
+                    if (span) span.textContent = `صورة ${idx + 1}`;
+                });
+            }
+
+            // في البداية هناك 6 خانات فارغة، نخفي زر الإضافة
+            updateAddButtonVisibility();
+
+            // ============================
+            // تجميع رقم السيارة
+            // ============================
+            const carLetters = document.getElementById('carLetters');
+            const carNumbers = document.getElementById('carNumbers');
+            const carNumberDisplay = document.getElementById('carNumberDisplay');
+            const carNumberFull = document.getElementById('carNumberFull');
+
+            function updateCarNumber() {
+                const letters = carLetters.value.trim() || '';
+                const numbers = carNumbers.value.trim() || '';
+                let full = '';
+                let displayHtml = '<i class="fas fa-car"></i> ';
+
+                if (letters || numbers) {
+                    full = letters + (numbers ? ' ' + numbers : '');
+                    displayHtml += `<span style="font-weight:bold;color:#2c3e50;">${full}</span>`;
+                    carNumberDisplay.innerHTML = displayHtml;
+                    carNumberFull.value = full;
+                } else {
+                    carNumberDisplay.innerHTML = `<i class="fas fa-car"></i> <span class="empty-hint">أدخل الحروف والأرقام أعلاه</span>`;
+                    carNumberFull.value = '';
+                }
+            }
+
+            carLetters.addEventListener('input', updateCarNumber);
+            carNumbers.addEventListener('input', updateCarNumber);
+
+            // ============================
+            // رفع الصور إلى ImgBB
+            // ============================
+            async function uploadImage(file) {
+                const formData = new FormData();
+                formData.append('image', file);
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    throw new Error('فشل رفع الصورة');
+                }
+                const data = await response.json();
+                return data.data.url;
+            }
+
+            async function uploadAllImages(files) {
+                const uploadPromises = files.map(file => uploadImage(file));
+                return await Promise.all(uploadPromises);
+            }
+
+            // ============================
+            // إرسال النموذج
+            // ============================
+            const form = document.getElementById('dataForm');
+            const messageDiv = document.getElementById('message');
+            const submitBtn = document.getElementById('submitBtn');
+
+            async function showMessage(text, type) {
+                messageDiv.textContent = text;
+                messageDiv.className = `message ${type}`;
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    if (messageDiv.style.display === 'block') {
+                        messageDiv.style.display = 'none';
+                    }
+                }, 6000);
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                messageDiv.style.display = 'none';
+
+                const fieldOfficer = document.getElementById('fieldOfficer').value;
+                const carFull = carNumberFull.value.trim();
+                const notes = document.getElementById('notes').value;
+
+                if (!fieldOfficer) return showMessage('الرجاء اختيار الميداني', 'error');
+                if (!carFull) return showMessage('الرجاء إدخال حروف وأرقام السيارة', 'error');
+
+                // التحقق من وجود 6 صور على الأقل
+                const filledImages = imageFiles.filter(f => f !== null);
+                if (filledImages.length < MIN_IMAGES) {
+                    return showMessage(`الرجاء إرفاق ${MIN_IMAGES} صور على الأقل (تم إرفاق ${filledImages.length})`, 'error');
+                }
+
+                // أنواع الصيانة
+                const checkboxes = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]:checked');
+                const maintenanceTypes = Array.from(checkboxes).map(cb => cb.value);
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري رفع الصور...';
+
+                try {
+                    // رفع جميع الصور (غير الفارغة)
+                    const validFiles = imageFiles.filter(f => f !== null);
+                    let imageUrls;
+                    try {
+                        imageUrls = await uploadAllImages(validFiles);
+                    } catch (uploadErr) {
+                        showMessage('❌ فشل رفع إحدى الصور: ' + uploadErr.message, 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال البيانات';
+                        return;
+                    }
+
+                    const payload = {
+                        fieldOfficer: fieldOfficer,
+                        carLetters: carLetters.value.trim(),
+                        carNumbers: carNumbers.value.trim(),
+                        carNumberFull: carFull,
+                        maintenanceTypes: maintenanceTypes,
+                        notes: notes,
+                        imageUrls: imageUrls
+                    };
+
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        redirect: 'follow',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const result = await response.json();
+
+                    if (result.result === 'success') {
+                        showMessage('✅ تم إرسال البيانات بنجاح!', 'success');
+                        // إعادة تعيين النموذج
+                        form.reset();
+                        carNumberFull.value = '';
+                        carNumberDisplay.innerHTML =
+                            `<i class="fas fa-car"></i> <span class="empty-hint">أدخل الحروف والأرقام أعلاه</span>`;
+                        // إزالة جميع الصور وإعادة إنشاء 6 خانات فارغة
+                        imagesGrid.innerHTML = '';
+                        imageFiles.length = 0;
+                        previewElements.length = 0;
+                        filenameElements.length = 0;
+                        removeButtons.length = 0;
+                        imageCounter = 0;
+                        for (let i = 0; i < MIN_IMAGES; i++) {
+                            imageFiles.push(null);
+                            imagesGrid.appendChild(createImageCard(i));
+                            imageCounter++;
+                        }
+                        // إلغاء تحديد checkbox
+                        document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]').forEach(cb => cb.checked =
+                            false);
+                        updateAddButtonVisibility();
+                    } else {
+                        showMessage('❌ فشل الإرسال: ' + (result.error || 'خطأ غير معروف'), 'error');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    showMessage('❌ حدث خطأ: ' + error.message, 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال البيانات';
+                }
+            });
+
+            // ============================
+            // دوال التحميل المشتركة
+            // ============================
+            function updateProgress(percent, text) {
+                const fill = document.getElementById('progressFill');
+                const label = document.getElementById('progressText');
+                fill.style.width = percent + '%';
+                label.textContent = text || percent + '%';
+            }
+
+            function showProgress(show) {
+                document.getElementById('progressContainer').style.display = show ? 'block' : 'none';
+            }
+
+            async function fetchImageAsBlob(url) {
+                let fetchUrl = url;
+                if (url.includes('?')) {
+                    fetchUrl += '&w=800';
+                } else {
+                    fetchUrl += '?w=800';
+                }
+                const response = await fetch(fetchUrl);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.blob();
+            }
+
+            // ============================
+            // تحميل صور برقم السيارة
+            // ============================
+            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadCar = document.getElementById('downloadCarNumber');
+            const downloadMsg = document.getElementById('downloadMessage');
+
+            downloadBtn.addEventListener('click', async function() {
+                const carNum = downloadCar.value.trim();
+                if (!carNum) {
+                    downloadMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> الرجاء إدخال رقم السيارة';
+                    downloadMsg.style.color = '#dc3545';
+                    return;
+                }
+
+                downloadMsg.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري البحث عن الصور...';
+                downloadMsg.style.color = '#007bff';
+                downloadBtn.disabled = true;
+                showProgress(true);
+                updateProgress(0, '0%');
+
+                try {
+                    const response = await fetch(`${APPS_SCRIPT_URL}?carNumber=${encodeURIComponent(carNum)}`);
+                    const result = await response.json();
+
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    let imageUrls = result.imageUrls || [];
+                    if (imageUrls.length === 0) {
+                        throw new Error('لا توجد صور محفوظة لهذه السيارة');
+                    }
+
+                    downloadMsg.innerHTML = `تم العثور على ${imageUrls.length} صورة. جاري التحميل...`;
+
+                    const zip = new JSZip();
+                    let downloaded = 0;
+                    const total = imageUrls.length;
+
+                    const promises = imageUrls.map(async (url, idx) => {
+                        try {
+                            const blob = await fetchImageAsBlob(url);
+                            let ext = url.split('.').pop().split('?')[0];
+                            if (!ext.match(/jpg|jpeg|png|gif|webp/i)) ext = 'jpg';
+                            zip.file(`سيارة_${carNum}_${idx+1}.${ext}`, blob, { binary: true });
+                            downloaded++;
+                            const percent = Math.round((downloaded / total) * 100);
+                            updateProgress(percent, `${percent}% (${downloaded}/${total})`);
+                        } catch (err) {
+                            console.warn(`خطأ في الصورة ${idx+1}:`, err);
+                            zip.file(`error_${idx+1}.txt`, `فشل تحميل الصورة: ${url}\n${err.message}`);
+                        }
+                    });
+
+                    await Promise.all(promises);
+
+                    if (downloaded === 0 && imageUrls.length > 0) {
+                        throw new Error('لم نتمكن من تحميل أي صورة');
+                    }
+
+                    const content = await zip.generateAsync({ type: 'blob' });
+                    saveAs(content, `صور_سيارة_${carNum}.zip`);
+
+                    downloadMsg.innerHTML =
+                    `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة (مصغرة بحجم 800 بكسل) من أصل ${imageUrls.length} بنجاح.`;
+                    downloadMsg.style.color = '#28a745';
+                } catch (err) {
+                    downloadMsg.innerHTML = `<i class="fas fa-times-circle"></i> خطأ: ${err.message}`;
+                    downloadMsg.style.color = '#dc3545';
+                } finally {
+                    downloadBtn.disabled = false;
+                    setTimeout(() => {
+                        downloadMsg.innerHTML = '';
+                        showProgress(false);
+                        updateProgress(0, '0%');
+                    }, 8000);
+                }
+            });
+
+            // ============================
+            // تحميل جميع صور التاريخ
+            // ============================
+            const downloadDateBtn = document.getElementById('downloadAllByDateBtn');
+            const downloadDateInput = document.getElementById('downloadDate');
+            const downloadDateMsg = document.getElementById('downloadDateMessage');
+
+            downloadDateBtn.addEventListener('click', async function() {
+                const dateVal = downloadDateInput.value;
+                if (!dateVal) {
+                    downloadDateMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> الرجاء اختيار تاريخ';
+                    downloadDateMsg.style.color = '#dc3545';
+                    return;
+                }
+
+                downloadDateMsg.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري البحث عن السجلات...';
+                downloadDateMsg.style.color = '#007bff';
+                downloadDateBtn.disabled = true;
+                showProgress(true);
+                updateProgress(0, '0%');
+
+                try {
+                    const response = await fetch(`${APPS_SCRIPT_URL}?date=${encodeURIComponent(dateVal)}`);
+                    const result = await response.json();
+
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    const records = result.records || [];
+                    if (records.length === 0) {
+                        throw new Error('لا توجد سجلات لهذا التاريخ');
+                    }
+
+                    let totalImages = 0;
+                    records.forEach(rec => totalImages += (rec.imageUrls || []).length);
+                    if (totalImages === 0) {
+                        throw new Error('لا توجد صور في السجلات');
+                    }
+
+                    downloadDateMsg.innerHTML =
+                        `تم العثور على ${records.length} سجل (${totalImages} صورة). جاري التحميل...`;
+
+                    const zip = new JSZip();
+                    let downloaded = 0;
+                    let processed = 0;
+
+                    const promises = records.map((record, recIdx) => {
+                        const carNum = record.carNumberFull || `سيارة_${recIdx+1}`;
+                        const urls = record.imageUrls || [];
+                        return urls.map(async (url, imgIdx) => {
+                            try {
+                                const blob = await fetchImageAsBlob(url);
+                                let ext = url.split('.').pop().split('?')[0];
+                                if (!ext.match(/jpg|jpeg|png|gif|webp/i)) ext = 'jpg';
+                                const filename =
+                                    `سيارة_${carNum}_صورة${imgIdx+1}.${ext}`;
+                                zip.file(filename, blob, { binary: true });
+                                downloaded++;
+                                processed++;
+                                const percent = Math.round((downloaded / totalImages) * 100);
+                                updateProgress(percent, `${percent}% (${downloaded}/${totalImages})`);
+                            } catch (err) {
+                                console.warn(`خطأ في صورة (سيارة ${carNum}, صورة ${imgIdx+1}):`, err);
+                                zip.file(`error_${carNum}_${imgIdx+1}.txt`,
+                                    `فشل تحميل الصورة: ${url}\n${err.message}`);
+                                processed++;
+                            }
+                        });
+                    });
+
+                    await Promise.all(promises.flat());
+
+                    if (downloaded === 0 && totalImages > 0) {
+                        throw new Error('لم نتمكن من تحميل أي صورة');
+                    }
+
+                    const content = await zip.generateAsync({ type: 'blob' });
+                    saveAs(content, `صور_السيارات_تاريخ_${dateVal}.zip`);
+
+                    downloadDateMsg.innerHTML =
+                        `<i class="fas fa-check-circle"></i> تم تنزيل ${downloaded} صورة من ${totalImages} (مصغرة بحجم 800 بكسل) لـ ${records.length} سجل.`;
+                    downloadDateMsg.style.color = '#28a745';
+                } catch (err) {
+                    downloadDateMsg.innerHTML = `<i class="fas fa-times-circle"></i> خطأ: ${err.message}`;
+                    downloadDateMsg.style.color = '#dc3545';
+                } finally {
+                    downloadDateBtn.disabled = false;
+                    setTimeout(() => {
+                        downloadDateMsg.innerHTML = '';
+                        showProgress(false);
+                        updateProgress(0, '0%');
+                    }, 8000);
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>
