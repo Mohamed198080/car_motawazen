@@ -170,6 +170,7 @@
         input[type="date"] { padding-left: 16px; }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -215,7 +216,28 @@
                 <div class="form-group full-width">
                     <label><i class="fas fa-tools"></i> نوع الصيانة <span class="counter-badge" id="maintCount">0</span></label>
                     <div class="checkbox-grid" id="maintenanceCheckboxes">
-                        <div class="checkbox-item"><input type="checkbox" id="maint_oil" value="غيار زيت"><label for="maint_oil">غيار زيت</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_engineOil" value="زيت المحرك - Engine Oil"><label for="maint_engineOil">زيت المحرك - Engine Oil</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_oilFilter" value="فلتر الزيت - Oil Filter"><label for="maint_oilFilter">فلتر الزيت - Oil Filter</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_coolant" value="سائل التبريد - Coolant/Antifreeze"><label for="maint_coolant">سائل التبريد - Coolant/Antifreeze</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_brakeFluid" value="زيت الفرامل - Brake Fluid"><label for="maint_brakeFluid">زيت الفرامل - Brake Fluid</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_transFluid" value="زيت القير - Transmission Fluid"><label for="maint_transFluid">زيت القير - Transmission Fluid</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_psFluid" value="زيت الدركسون - Power Steering Fluid"><label for="maint_psFluid">زيت الدركسون - Power Steering Fluid</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_washerFluid" value="سائل غسيل الزجاج - Windshield Washer Fluid"><label for="maint_washerFluid">سائل غسيل الزجاج - Windshield Washer Fluid</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_airFilter" value="فلتر الهواء - Air Filter"><label for="maint_airFilter">فلتر الهواء - Air Filter</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_fuelFilter" value="فلتر الوقود - Fuel Filter"><label for="maint_fuelFilter">فلتر الوقود - Fuel Filter</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_cabinFilter" value="فلتر المكيف - Cabin Air Filter"><label for="maint_cabinFilter">فلتر المكيف - Cabin Air Filter</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_brakePads" value="تيل الفرامل - Brake Pads"><label for="maint_brakePads">تيل الفرامل - Brake Pads</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_brakeDiscs" value="أقراص الفرامل - Brake Discs/Rotors"><label for="maint_brakeDiscs">أقراص الفرامل - Brake Discs/Rotors</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_shocks" value="ممتصات الصدمات - Shock Absorbers"><label for="maint_shocks">ممتصات الصدمات - Shock Absorbers</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_tires" value="الإطارات - Tires"><label for="maint_tires">الإطارات - Tires</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_battery" value="البطارية - Battery"><label for="maint_battery">البطارية - Battery</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_sparkPlugs" value="شمعات الإشعال - Spark Plugs"><label for="maint_sparkPlugs">شمعات الإشعال - Spark Plugs</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_lights" value="المصابيح - Lights/Bulbs"><label for="maint_lights">المصابيح - Lights/Bulbs</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_obd" value="فحص كمبيوتر - Diagnostic Scan (OBD)"><label for="maint_obd">فحص كمبيوتر - Diagnostic Scan (OBD)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_belts" value="السيور - Belts (Serpentine/Timing)"><label for="maint_belts">السيور - Belts (Serpentine/Timing)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_acSystem" value="نظام التكييف - AC System"><label for="maint_acSystem">نظام التكييف - AC System</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="maint_leaks" value="التسريبات - Leaks"><label for="maint_leaks">التسريبات - Leaks</label></div>
+                    </div>
                         <div class="checkbox-item"><input type="checkbox" id="maint_tires" value="تغير كفرات"><label for="maint_tires">تغير كفرات</label></div>
                         <div class="checkbox-item"><input type="checkbox" id="maint_airFilter" value="تغير فلتر هواء"><label for="maint_airFilter">تغير فلتر هواء</label></div>
                         <div class="checkbox-item"><input type="checkbox" id="maint_oilFilter" value="تغير فلتر زيت"><label for="maint_oilFilter">تغير فلتر زيت</label></div>
@@ -264,7 +286,7 @@
     <script>
         (function() {
             const IMGBB_API_KEY = '80e250fa77e32dc6df4bbd54eb7af292';
-            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjayluiwveWpVWAxycnVjO6f-M7K0MKU-45_yvrGtqVEoaDNpbxOn8ZImVNu-v1SAgpA/exec';
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwStq8y4u0s7ajssTCsO5-R-dV4x2Tvt6vxY9aqbXK27z7YuQWEuLDkLJIIkLiaE4q4ig/exec';
 
             const themeToggle = document.getElementById('themeToggle');
             const themeIcon = themeToggle.querySelector('i');
