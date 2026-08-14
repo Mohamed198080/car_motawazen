@@ -645,104 +645,151 @@
                 }
             });
         
+            
             // PDF Export Functionality
             const pdfBtn = document.getElementById('pdfBtn');
             const pdfTemplate = document.getElementById('pdfTemplate');
 
+            function checkHtml2PdfLoaded() {
+                return typeof html2pdf !== 'undefined';
+            }
+
             pdfBtn.addEventListener('click', async function() {
+                if (!checkHtml2PdfLoaded()) {
+                    showMessage('❌ مكتبة PDF لم تُحمّل بعد، يرجى التحقق من اتصال الإنترنت وإعادة تحميل الصفحة', 'error');
+                    console.error('html2pdf library not loaded');
+                    return;
+                }
+
                 const fieldOfficer = document.getElementById('fieldOfficer').value;
                 const carFull = carNumberFull.value.trim();
                 const carLet = carLetters.value.trim();
                 const carNum = carNumbers.value.trim();
                 const notesVal = document.getElementById('notes').value.trim();
 
-                if (!fieldOfficer || !carFull) {
-                    showMessage('الرجاء إدخال الميداني ورقم السيارة قبل تصدير PDF', 'error');
+                if (!fieldOfficer) {
+                    showMessage('الرجاء اختيار الميداني قبل تصدير PDF', 'error');
+                    return;
+                }
+                if (!carFull) {
+                    showMessage('الرجاء إدخال رقم السيارة قبل تصدير PDF', 'error');
                     return;
                 }
 
                 pdfBtn.disabled = true;
                 pdfBtn.innerHTML = '<span class="loading-spinner"></span> جاري إنشاء PDF...';
 
-                // Populate PDF template
-                document.getElementById('pdfDate').textContent = new Date().toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
-                document.getElementById('pdfFieldOfficer').textContent = fieldOfficer;
-                document.getElementById('pdfCarNumber').textContent = carFull;
-                document.getElementById('pdfCarLetters').textContent = carLet || '—';
-                document.getElementById('pdfCarNumbers').textContent = carNum || '—';
-                document.getElementById('pdfNotes').textContent = notesVal || 'لا توجد ملاحظات';
-
-                // Maintenance items
-                const maintList = document.getElementById('pdfMaintenanceList');
-                maintList.innerHTML = '';
-                const checkedItems = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]:checked');
-                if (checkedItems.length === 0) {
-                    const li = document.createElement('li');
-                    li.style.cssText = 'padding:10px 15px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#dc2626; margin-bottom:8px;';
-                    li.textContent = 'لم يتم اختيار أي نوع صيانة';
-                    maintList.appendChild(li);
-                } else {
-                    checkedItems.forEach(cb => {
-                        const li = document.createElement('li');
-                        li.style.cssText = 'padding:10px 15px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; color:#166534; margin-bottom:8px; display:flex; align-items:center; gap:10px;';
-                        li.innerHTML = '<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#10b981;color:#fff;border-radius:50%;font-size:14px;">✓</span> ' + cb.value;
-                        maintList.appendChild(li);
-                    });
-                }
-
-                // Images
-                const pdfImages = document.getElementById('pdfImages');
-                pdfImages.innerHTML = '';
-                const validPreviews = previewElements.filter((p, i) => imageFiles[i] !== null && p.src);
-                if (validPreviews.length === 0) {
-                    pdfImages.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:30px; color:#94a3b8; background:#f8fafc; border-radius:8px; border:2px dashed #cbd5e1;">لا توجد صور مرفقة</div>';
-                } else {
-                    validPreviews.forEach((img, idx) => {
-                        const wrapper = document.createElement('div');
-                        wrapper.style.cssText = 'text-align:center;';
-                        const newImg = document.createElement('img');
-                        newImg.src = img.src;
-                        newImg.style.cssText = 'width:100%; max-height:200px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;';
-                        const caption = document.createElement('div');
-                        caption.textContent = 'صورة ' + (idx + 1);
-                        caption.style.cssText = 'margin-top:8px; font-size:13px; color:#64748b;';
-                        wrapper.appendChild(newImg);
-                        wrapper.appendChild(caption);
-                        pdfImages.appendChild(wrapper);
-                    });
-                }
-
-                // Show template temporarily for rendering
-                pdfTemplate.style.display = 'block';
-                pdfTemplate.style.position = 'absolute';
-                pdfTemplate.style.left = '-9999px';
-                pdfTemplate.style.width = '800px';
-
                 try {
+                    // Populate PDF template
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString('ar-SA', { 
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit' 
+                    });
+                    document.getElementById('pdfDate').textContent = dateStr;
+                    document.getElementById('pdfFieldOfficer').textContent = fieldOfficer;
+                    document.getElementById('pdfCarNumber').textContent = carFull;
+                    document.getElementById('pdfCarLetters').textContent = carLet || '—';
+                    document.getElementById('pdfCarNumbers').textContent = carNum || '—';
+                    document.getElementById('pdfNotes').textContent = notesVal || 'لا توجد ملاحظات';
+
+                    // Maintenance items
+                    const maintList = document.getElementById('pdfMaintenanceList');
+                    maintList.innerHTML = '';
+                    const checkedItems = document.querySelectorAll('#maintenanceCheckboxes input[type="checkbox"]:checked');
+                    if (checkedItems.length === 0) {
+                        const li = document.createElement('li');
+                        li.style.cssText = 'padding:10px 15px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#dc2626; margin-bottom:8px; font-family:Tajawal,Cairo,sans-serif;';
+                        li.textContent = 'لم يتم اختيار أي نوع صيانة';
+                        maintList.appendChild(li);
+                    } else {
+                        checkedItems.forEach(function(cb) {
+                            const li = document.createElement('li');
+                            li.style.cssText = 'padding:10px 15px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; color:#166534; margin-bottom:8px; font-family:Tajawal,Cairo,sans-serif; display:flex; align-items:center; gap:10px;';
+                            li.innerHTML = '<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#10b981;color:#fff;border-radius:50%;font-size:14px;flex-shrink:0;">✓</span> <span>' + cb.value + '</span>';
+                            maintList.appendChild(li);
+                        });
+                    }
+
+                    // Images
+                    const pdfImages = document.getElementById('pdfImages');
+                    pdfImages.innerHTML = '';
+                    let hasImages = false;
+                    previewElements.forEach(function(img, idx) {
+                        if (imageFiles[idx] !== null && img.src && img.style.display !== 'none') {
+                            hasImages = true;
+                            const wrapper = document.createElement('div');
+                            wrapper.style.cssText = 'text-align:center; break-inside:avoid;';
+                            const newImg = document.createElement('img');
+                            newImg.src = img.src;
+                            newImg.style.cssText = 'width:100%; max-height:180px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;';
+                            const caption = document.createElement('div');
+                            caption.textContent = 'صورة ' + (idx + 1);
+                            caption.style.cssText = 'margin-top:8px; font-size:13px; color:#64748b; font-family:Tajawal,Cairo,sans-serif;';
+                            wrapper.appendChild(newImg);
+                            wrapper.appendChild(caption);
+                            pdfImages.appendChild(wrapper);
+                        }
+                    });
+                    if (!hasImages) {
+                        pdfImages.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:30px; color:#94a3b8; background:#f8fafc; border-radius:8px; border:2px dashed #cbd5e1; font-family:Tajawal,Cairo,sans-serif;">لا توجد صور مرفقة</div>';
+                    }
+
+                    // Make template visible for rendering
+                    pdfTemplate.style.display = 'block';
+                    pdfTemplate.style.visibility = 'visible';
+                    pdfTemplate.style.position = 'fixed';
+                    pdfTemplate.style.top = '0';
+                    pdfTemplate.style.left = '0';
+                    pdfTemplate.style.zIndex = '-9999';
+                    pdfTemplate.style.width = '210mm';
+                    pdfTemplate.style.background = '#ffffff';
+
+                    // Wait a moment for images to render
+                    await new Promise(function(resolve) { setTimeout(resolve, 500); });
+
+                    const filename = 'تقرير_صيانة_' + carFull.replace(/\s+/g, '_') + '_' + now.toISOString().slice(0,10) + '.pdf';
+
                     const opt = {
-                        margin: 0,
-                        filename: 'تقرير_صيانة_' + carFull + '_' + new Date().toISOString().slice(0,10) + '.pdf',
-                        image: { type: 'jpeg', quality: 0.98 },
-                        html2canvas: { scale: 2, useCORS: true, logging: false },
-                        jsPDF: { unit: 'px', format: 'a4', orientation: 'portrait', putOnlyUsedFonts: true }
+                        margin: [10, 10, 10, 10],
+                        filename: filename,
+                        image: { type: 'jpeg', quality: 0.95 },
+                        html2canvas: { 
+                            scale: 2, 
+                            useCORS: true, 
+                            logging: false,
+                            allowTaint: true,
+                            backgroundColor: '#ffffff'
+                        },
+                        jsPDF: { 
+                            unit: 'mm', 
+                            format: 'a4', 
+                            orientation: 'portrait',
+                            putOnlyUsedFonts: true
+                        }
                     };
 
                     await html2pdf().set(opt).from(pdfTemplate).save();
                     showMessage('✅ تم تصدير PDF بنجاح!', 'success');
+
                 } catch (err) {
-                    console.error(err);
-                    showMessage('❌ حدث خطأ أثناء إنشاء PDF: ' + err.message, 'error');
+                    console.error('PDF Export Error:', err);
+                    showMessage('❌ حدث خطأ أثناء إنشاء PDF: ' + (err.message || 'خطأ غير معروف'), 'error');
                 } finally {
+                    // Hide template again
                     pdfTemplate.style.display = 'none';
                     pdfTemplate.style.position = '';
+                    pdfTemplate.style.top = '';
                     pdfTemplate.style.left = '';
+                    pdfTemplate.style.zIndex = '';
                     pdfTemplate.style.width = '';
+                    pdfTemplate.style.visibility = '';
                     pdfBtn.disabled = false;
                     pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> تصدير PDF';
                 }
             });
 
-})();
+            })();
     </script>
 
     <!-- PDF Export Template (Hidden) -->
